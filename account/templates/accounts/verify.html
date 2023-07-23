@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>فرم کد</title>
+</head>
+<body>
+  <h2>ارسال کد </h2>
+
+  <form action="" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="send">
+    </form>
+
+</body>
+</html>
