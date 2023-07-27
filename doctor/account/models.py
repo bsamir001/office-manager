@@ -52,3 +52,5 @@ class patent(models.Model):
     typeSickness = models.CharField(max_length=11,)
     age=models.CharField(max_length=10,)
     textSickness=models.TextField()
+
+

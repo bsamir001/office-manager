@@ -28,7 +28,7 @@ class Doctor(models.Model):
 
 
 class Appointment(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,null=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
