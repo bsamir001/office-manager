@@ -1,0 +1,16 @@
+<h1>Choose an Available Appointment</h1>
+<form method="POST" action="{% url 'turn:reserved_appointments' %}">
+  {% csrf_token %}
+  <ul>
+    {% for appointment in appointments %}
+      <li>
+        <input type="radio" name="appointment_id" value="{{ appointment.id }}">
+        <label>{{ appointment }}</label>
+        <span>Doctor Delay: {{ appointment.doctor_delay|default:"Not Set" }}</span>
+      </li>
+    {% empty %}
+      <li>No available appointments.</li>
+    {% endfor %}
+  </ul>
+  <button type="submit">Reserve</button>
+</form>

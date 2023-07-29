@@ -1,0 +1,24 @@
+<h1>Create Appointment</h1>
+<form method="POST" action="{% url 'turn:create_appointment' %}">
+    {% csrf_token %}
+  <label for="id_doctor">Doctor:</label>
+  <select name="doctor" id="id_doctor">
+    {% for doctor in doctors %}
+      <option value="{{ doctor.id }}">{{ doctor.name }}</option>
+    {% endfor %}
+  </select>
+  <br>
+  <label for="id_start_date">Start Date:</label>
+  <input type="date" name="start_date" id="id_start_date">
+  <br>
+  <label for="id_end_date">End Date:</label>
+  <input type="date" name="end_date" id="id_end_date">
+  <br>
+  <label for="id_start_time">Start Time:</label>
+  <input type="time" name="start_time" id="id_start_time">
+  <br>
+  <label for="id_end_time">End Time:</label>
+  <input type="time" name="end_time" id="id_end_time">
+  <br>
+  <button type="submit">Create</button>
+</form>
