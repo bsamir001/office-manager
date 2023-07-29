@@ -7,6 +7,7 @@
         <input type="radio" name="appointment_id" value="{{ appointment.id }}">
         <label>{{ appointment }}</label>
         <span>Doctor Delay: {{ appointment.doctor_delay|default:"Not Set" }}</span>
+      <a href="{% url 'turn:pay' appointment_id=appointment.id %}">Pay for Appointment</a>
       </li>
     {% empty %}
       <li>No available appointments.</li>
