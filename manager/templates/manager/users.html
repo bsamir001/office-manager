@@ -1,0 +1,23 @@
+<!-- manager/templates/manager/appointments.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>لیست نوبت‌ها</title>
+</head>
+<body>
+    <h1>لیست نوبت‌ها</h1>
+    <table>
+        {% for appointment in appointments %}
+            <tr>
+                <!-- ایجاد لینک به صفحه‌ی فرم برای هر شماره -->
+                <td><a href="{% url 'manager:show_info' phone_number=appointment.user.phone_number %}">{{ appointment.user.phone_number }}</a></td>
+                <td>{{ appointment.doctor.name }}</td>
+                <td>{{ appointment.start_date }}</td>
+                <td>{{ appointment.start_time }}<!-- <input type="submit" value="ذخیره"> --></td>
+
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
