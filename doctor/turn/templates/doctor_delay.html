@@ -1,7 +1,0 @@
-<!-- doctor_delay.html -->
-<h1>Doctor Delay</h1>
-<form method="POST" action="{% url 'turn:doctor_delay' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>

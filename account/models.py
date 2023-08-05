@@ -6,7 +6,7 @@ from django.contrib.auth.models import Permission
 
 # Create your models here.
 class User(AbstractBaseUser):
-    phone_number = models.CharField(max_length=25, unique=True, )
+    phone_number = models.CharField(max_length=25,unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = True
@@ -47,11 +47,11 @@ class patent(models.Model):
         ('عکس ', 'گزینه 1'),
         ('ازمایش  ', 'گزینه 2'),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     codeID = models.CharField(max_length=11, )
     firstname = models.CharField(max_length=11, )
     lastname = models.CharField(max_length=11, )
-    typebime = models.CharField(max_length=20, choices=my_choices_bime, )
+    typebime = models.CharField(max_length=20, choices=my_choices_bime )
     infopatent = models.CharField(max_length=20, choices=my_choices_info, )
     typeSickness = models.CharField(max_length=11, )
     age = models.CharField(max_length=10, )

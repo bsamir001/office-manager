@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('account.urls', namespace='account')),
     path('turn/', include('turn.urls', namespace='turn')),
     path('manager/', include('manager.urls', namespace='manager')),
+    path('hesab/',include('hesab.urls',namespace='hesab')),
     ]

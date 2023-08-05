@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'account',
     'turn',
     'manager',
+    'hesab',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -122,3 +123,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
+MERCHANT = "00000000-0000-0000-0000-000000000000"
+
+SANDBOX = True

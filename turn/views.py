@@ -8,6 +8,8 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 import requests
 import json
+from django.shortcuts import get_object_or_404
+from account.models import patent
 class CreateAppointmentsView(View):
     def get(self, request):
         doctors = Doctor.objects.all()
@@ -97,6 +99,7 @@ class pay_view(View):
                 if response_data['Status'] == 100:
                     appointment.user = request.user
                     appointment.is_reserved=True
+                    appointment.patent=get_object_or_404(patent, user=request.user)
                     appointment.save()
                     return redirect(ZP_API_STARTPAY + str(response_data['Authority']))
                 else:
