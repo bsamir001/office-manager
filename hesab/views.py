@@ -19,29 +19,50 @@ class SameInsuranceAppointmentsView(View):
         form = self.form_class(request.POST)
         form1=bimepatent_form(request.POST)
         if form.is_valid():
-            if form1.is_valid():
-               try:
+            if form1.is_valid() :
+                try:
                     typebime1 = form1.cleaned_data['typebime']
                     start_date = form.cleaned_data['start_date']
                     end_date = form.cleaned_data['end_date']
                     matching_patents = patent.objects.get(typebime=typebime1)
-
+                    expance=Expense.objects.filter()
                     appointments = Appointment.objects.filter(patent=matching_patents, start_date__gte=start_date,
-                                                      end_date__lte=end_date)
+                                                      end_date__lte=end_date,payment=True)
                     appointmentsall = Appointment.objects.filter( start_date__gte=start_date,
                                                               end_date__lte=end_date,payment=True)
+                    cout_expnce=expance.count()
                     expense_count_all=appointmentsall.count()
-                    expense_count = appointments.count()
+                    expense_count = appointments.count()*112
                     return render(request, 'same_insurance_appointments.html',
-                            {'appointments': appointments, 'patent': matching_patents, 'expence': expense_count,'form':form,'form1':form1,'expense_count_all':expense_count_all})
+                            {'appointments': appointments, 'patent': matching_patents, 'expence': expense_count,'form':form,'form1':form1,'expense_count_all':expense_count_all,'cout_expnce':cout_expnce,'expance':expance})
 
 
-               except patent.DoesNotExist:
+                except patent.DoesNotExist:
                     messages.ERROR(request, 'موردی با مشخصات داده شده وجود ندارد.')
 
 
 
-class DailySummaryView(View):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''class DailySummaryView(View):
     def get(self, request):
         today = datetime.now().date()
         daily_total = Expense.objects.filter(date=today).aggregate(total=Sum('price'))['total'] or 0
@@ -76,4 +97,4 @@ class YearlySummaryView(View):
         context = {
             'yearly_total': yearly_total,
         }
-        return render(request, 'yearly_summary.html', context)
+        return render(request, 'yearly_summary.html', context)'''

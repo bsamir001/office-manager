@@ -10,6 +10,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         {{ form1.as_p }}
+        {{ form2.as_p }}
         <input type="submit" value="اعمال فیلتر">
     </form>
    {% if appointments %}
@@ -20,9 +21,13 @@
                 <li> {{ patent.typebime }}</li>
                 <li> {{ expence }}</li>
                 <li>{{ expense_count_all }}</li>
+            {% for expence1 in expance %}
+                 <li>{{ expence1 }}</li>
+
 
             {% empty %}
                 <li>No appointments found for type bime "".</li>
+            {% endfor %}
             {% endfor %}
         </ul>
 
