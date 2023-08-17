@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Appointments</title>
+</head>
+<body>
+    <h2>All Days Appointments</h2>
+
+  <ul>
+    {% for day in all_days %}
+      <li><a href="{% url 'turn:day_appointments' appointment_date=day %}">{{ day }}</a></li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

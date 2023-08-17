@@ -13,24 +13,24 @@
         {{ form2.as_p }}
         <input type="submit" value="اعمال فیلتر">
     </form>
+   {% for expence1 in expance %}
+                 <li>{{ expence1 }}</li>
+   {% endfor %}
    {% if appointments %}
         <h2>هزینه‌های فیلتر شده:</h2>
         <ul>
+
             {% for appointment in appointments %}
+                <li>{{ expance }}</li>
                 <li>{{ appointment }}</li>
                 <li> {{ patent.typebime }}</li>
                 <li> {{ expence }}</li>
                 <li>{{ expense_count_all }}</li>
-            {% for expence1 in expance %}
-                 <li>{{ expence1 }}</li>
-
-
             {% empty %}
                 <li>No appointments found for type bime "".</li>
             {% endfor %}
-            {% endfor %}
         </ul>
-
    {% endif %}
+    {{ cout }}
 </body>
 </html>
