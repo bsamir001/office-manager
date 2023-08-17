@@ -19,22 +19,22 @@ class SameInsuranceAppointmentsView(View):
         form = self.form_class(request.POST)
         form1=bimepatent_form(request.POST)
         if form.is_valid():
-            if form1.is_valid() :
+            if form1.is_valid():
                 try:
                     typebime1 = form1.cleaned_data['typebime']
                     start_date = form.cleaned_data['start_date']
                     end_date = form.cleaned_data['end_date']
-                    matching_patents = patent.objects.get(typebime=typebime1)
+                    matching_patents = patent.objects.filter(typebime=typebime1)
                     expance=Expense.objects.filter()
-                    appointments = Appointment.objects.filter(patent=matching_patents, start_date__gte=start_date,
-                                                      end_date__lte=end_date,payment=True)
+                    appointments = Appointment.objects.filter(patent__in=matching_patents, start_date__gte=start_date,
+                                                      end_date__lte=end_date)
                     appointmentsall = Appointment.objects.filter( start_date__gte=start_date,
                                                               end_date__lte=end_date,payment=True)
                     cout_expnce=expance.count()
                     expense_count_all=appointmentsall.count()
-                    expense_count = appointments.count()*112
-                    return render(request, 'same_insurance_appointments.html',
-                            {'appointments': appointments, 'patent': matching_patents, 'expence': expense_count,'form':form,'form1':form1,'expense_count_all':expense_count_all,'cout_expnce':cout_expnce,'expance':expance})
+                    expense_count = appointments.count()*100
+                    cout=expense_count+cout_expnce
+                    return render(request, 'same_insurance_appointments.html',{'appointments': appointments, 'patent': matching_patents, 'expence': expense_count,'form':form,'form1':form1,'expense_count_all':expense_count_all,'cout_expnce':cout_expnce,'expance':expance,'cout':cout})
 
 
                 except patent.DoesNotExist:
