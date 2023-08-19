@@ -9,6 +9,6 @@ urlpatterns = [
     path('pay/<int:appointment_id>/', pay_view.as_view(), name='pay'),
     path('verfy/', Verify_View.as_view(), name='verify'),
     path('all_days/', AllDaysAppointmentsView.as_view(), name='all_days_appointments'),
-    path('day_appointments/<str:appointment_date>/', DayAppointmentsView.as_view(), name='day_appointments'),
+    path('all_days/<str:appointment_date>/', DayAppointmentsView.as_view(), name='day_appointments'),
 
 ]

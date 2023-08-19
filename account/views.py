@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib import messages
 from django.views import View
-from .forms import userregisterform,VerifycodeForm,User_RegisterForm
 from .utils import send_otp_code
 import random
 from .models import Otpcode,User,patent
@@ -9,54 +8,66 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from .serializers import userrigister_selizer,Verifycodeselizer,User_Registerselizer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.urls import reverse
+from rest_framework import status
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 # Create your views here.
-class userregisterviews(View):
-    form_class=userregisterform
-    template_name='accounts/register.html'
+class userregisterviews(APIView):
     def get(self,request):
-        form=self.form_class
-        return render(request,self.template_name,{'form':form})
+        users = User.objects.all()
+        selizer=userrigister_selizer(many=True)
+        return Response(selizer.data)
     #برای ذخیره دوباره اطلاعات و استفداه مجدد در برنامه
+    #@csrf_protect
+    csrf_protected_method = method_decorator(csrf_protect)
     def post(self,request):
-        form=self.form_class(request.POST)
-        if form.is_valid():
-            phone = form.cleaned_data.get('phone')
+        ser_data = userrigister_selizer(data=request.POST)
+        if ser_data.is_valid():
+            phone = ser_data.data.get('phone')
             user1 = User.objects.filter(phone_number=phone).exists()
             if user1:
                 random_code=random.randint(1000,9999)
-                send_otp_code(form.cleaned_data['phone'],random_code)
+                send_otp_code(ser_data.validated_data['phone'],random_code)
                 Otpcode.objects.create(phone_number=phone,code=random_code)
                 request.session['user_registration_info'] = {
                     'phone_number':phone,
                 }
-                messages.success(request, 'we sent you code', 'success')
-                return redirect('account:verify_code')
+                url_addres = reverse('account:verify_code',)
+                return Response({'message': 'okkk', 'url_addres': url_addres},
+                                status=status.HTTP_200_OK)
             else:
                 random_code = random.randint(1000, 9999)
-                send_otp_code(form.cleaned_data['phone'], random_code)
-                Otpcode.objects.create(phone_number=form.cleaned_data['phone'],code=random_code)
+                send_otp_code(ser_data.validated_data['phone'], random_code)
+                Otpcode.objects.create(phone_number=ser_data.validated_data['phone'],code=random_code)
                 request.session['user_registration_info']={
-                    'phone_number':form.cleaned_data['phone'],
+                    'phone_number':ser_data.validated_data['phone'],
                 }
                 messages.success(request,'we sent you code','success')
-                return redirect('account:verify_code')
-        return render(request,self.template_name,{'form':form})
-class userregisterverifycodeview(View):
-    form_class=VerifycodeForm
+                url_addres = reverse('account:verify_code', )
+                return Response({'message': 'okkk+++', 'url_addres': url_addres},
+                                status=status.HTTP_200_OK)
+        return Response({'message': 'eroor',},
+                        status=status.HTTP_400_BAD_REQUEST)
+class userregisterverifycodeview(APIView):
     def get(self,request):
-        form=self.form_class
-        return render(request,'accounts/verify.html',{'form': form})
+        serializer = Verifycodeselizer(many=True)
+        return Response(serializer.data)
     def post(self,request):
         user_session = request.session.get('user_registration_info')
         if user_session:
             phone_number = user_session.get('phone_number')
             code_instance = Otpcode.objects.get(phone_number=phone_number)
-            form = self.form_class(request.POST)
-            if form.is_valid():
+            ser_data = Verifycodeselizer(data=request.POST)
+            if ser_data.is_valid():
                     user1 = User.objects.filter(phone_number=phone_number).exists()
                     print(user1)
                     if user1:
-                        cd = form.cleaned_data
+                        cd = ser_data.validated_data
                         if cd['code']==code_instance.code:
                                 messages.success(request,'you registerd333','success')
                                 user=User.objects.get(phone_number=phone_number)
@@ -65,52 +76,65 @@ class userregisterverifycodeview(View):
                                 if user is not None:
                                     if user.is_active:
                                         login(request, user)
-                                        messages.success(request, 'احراز هویت با موفقیت انجام شد', 'success')
-                                        return redirect('account:deatel')
+                                        url_addres = reverse('account:deatel', )
+                                        return Response({'message': 'احراز هویت با موفقیت انجام شد', 'url_addres': url_addres},
+                                                        status=status.HTTP_200_OK)
                                     else:
-                                        return messages.error(request, 'حساب غیرفعال است', 'warning')
+                                        return Response(
+                                            {'message': 'حساب غیرفعال است',},
+                                            status=status.HTTP_204_NO_CONTENT)
                                 else:
-                                    messages.error(request, 'کاربری با این اطلاعات وجود ندارد', 'warning')
-                                    return redirect('account:register')
+                                    url_addres = reverse('account:register', )
+                                    return Response({'message': 'حساب یافت نشد ','url_addres': url_addres },status=status.HTTP_404_NOT_FOUND)
                         else:
-                            messages.error(request,'this code is wrong','danger')
-                            return redirect('account:verify_code')
+                            url_addres = reverse('account:verify_code', )
+                            return Response({'message': 'code wrong ', 'url_addres': url_addres},
+                                            status=status.HTTP_400_BAD_REQUEST)
                     else:
-                        cd=form.cleaned_data
+                        cd=ser_data.validated_data
                         if cd['code']==code_instance.code:
                             User.objects.create_user(user_session['phone_number'])#user_session['password']
                             code_instance.delete()
                             messages.success(request,'you registerd','success')
                             user = User.objects.get(phone_number=phone_number)
                             login(request, user)
-                            return redirect('account:register')
+                            url_addres = reverse('account:register', )
+                            return Response({'message': 'حساب  ', 'url_addres': url_addres},
+                                            status=status.HTTP_200_OK)
+
                         else:
-                            messages.error(request, 'this code is wrong', 'danger')
-                            return redirect('account:verify_code')
+                            url_addres = reverse('account:verify_code', )
+                            return Response({'message': 'code wrong ', 'url_addres': url_addres},
+                                            status=status.HTTP_400_BAD_REQUEST)
         else:
-            messages.error(request, 'User registration information not found', 'danger')
-            return redirect('account:verify_code')
+            url_addres = reverse('account:verify_code', )
+            return Response({'message': 'code wrong ', 'url_addres': url_addres},
+                            status=status.HTTP_400_BAD_REQUEST)
 @method_decorator(login_required, name='dispatch')
-class User_register(View):
-    form_class=User_RegisterForm
+class User_register(APIView):
     def get(self,request):
-        form=self.form_class
-        return render(request,'accounts/registerdata.html',{'form':form})
+        serializer = User_Registerselizer(many=True)
+        return Response(serializer.data)
+
+    csrf_protected_method = method_decorator(csrf_protect)
+    @csrf_protect
     def post(self,request):
         user_id = request.user
-        form = self.form_class(request.POST)
-        contaxt={'form':form,'user':user_id}
-        if form.is_valid():
-            patent1=form.save(commit=False)
+        ser_data = User_Registerselizer(data=request.POST)
+
+        #contaxt={'serdata':ser_data,'user':user_id}
+        if ser_data.is_valid():
+            patent1=ser_data.save(commit=False)
             patent1.user = user_id
             patent1.save()
-        return render(request,'accounts/registerdata.html',contaxt)
-class UserLogoutView(LoginRequiredMixin, View):
+            return Response({'message': 'suceese ',},
+                            status=status.HTTP_200_OK)
+
+class UserLogoutView(LoginRequiredMixin,APIView):
     def get(self, request):
         logout(request)
-        messages.success(request, 'logout was successfully', 'success')
-        return redirect('account:test')
-
+        return Response({'message': 'sucess ',},
+                        status=status.HTTP_200_OK)
 
 class Deatel_register(View):
 
@@ -132,30 +156,3 @@ class Deatel_register(View):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-''' def get(self,request):
-        model=patent
-        form={'form':model}
-        return render(request,'accounts/deatel.html',form)
-    def post(self,request,patent_id):
-        model = patent
-        form = {'form': model}
-        patent1= patent.objects.filter(user=patent.user)
-        if patent1.exists():
-            form = patent1.first()
-            context = {'patent': form}
-            return render(request, 'accounts/deatel.html', context)
-        else:
-            # مدل با شناسه مورد نظر یافت نشد
-            return render(request, 'accounts/deatel.html')'''
-#وصل کردن اطلاعات کاربر به اطلاعات قلی اش مونده اس

@@ -6,6 +6,7 @@ from .models import User,Otpcode,patent
 from django.contrib.auth.models import Group
 
 
+
 # Register your models here.
 
 

@@ -147,7 +147,7 @@ class Verify_View(View):
 #####################################################
 class AllDaysAppointmentsView(APIView):
     def get(self, request):
-        today = date(2023, 7, 31)
+        today = date(2023,6, 29)
         all_days = [today + timedelta(days=i) for i in range(30)]
         return Response({'all_days': all_days})
 

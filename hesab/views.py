@@ -31,9 +31,22 @@ class SameInsuranceAppointmentsView(View):
                     appointmentsall = Appointment.objects.filter( start_date__gte=start_date,
                                                               end_date__lte=end_date,payment=True)
                     cout_expnce=expance.count()
-                    expense_count_all=appointmentsall.count()
+                    expense_count_all=appointmentsall.count()*100
                     expense_count = appointments.count()*100
-                    cout=expense_count+cout_expnce
+                    if typebime1=='تامین اجتماهی ':
+                        expense_count=appointments.count()*200
+                    elif typebime1=='فرهنگی':
+                        expense_count = appointments.count() *150
+                    elif typebime1=='گزینه3':
+                        expense_count=appointments.count()*200
+                    elif typebime1==None:
+                        expense_count_all = appointmentsall.count()
+                    else:
+                        expense_count = appointments.count()
+
+
+
+                    cout=expense_count-cout_expnce
                     return render(request, 'same_insurance_appointments.html',{'appointments': appointments, 'patent': matching_patents, 'expence': expense_count,'form':form,'form1':form1,'expense_count_all':expense_count_all,'cout_expnce':cout_expnce,'expance':expance,'cout':cout})
 
 
