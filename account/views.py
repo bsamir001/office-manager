@@ -16,6 +16,7 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 class userregisterviews(APIView):
     def get(self,request):
@@ -110,7 +111,7 @@ class userregisterverifycodeview(APIView):
             url_addres = reverse('account:verify_code', )
             return Response({'message': 'code wrong ', 'url_addres': url_addres},
                             status=status.HTTP_400_BAD_REQUEST)
-@method_decorator(login_required, name='dispatch')
+permission_classes = [IsAuthenticated]
 class User_register(APIView):
     def get(self,request):
         serializer = User_Registerselizer(many=True)
@@ -129,7 +130,8 @@ class User_register(APIView):
             patent1.save()
             return Response({'message': 'suceese ',},
                             status=status.HTTP_200_OK)
-
+            
+permission_classes = [IsAuthenticated]
 class UserLogoutView(LoginRequiredMixin,APIView):
     def get(self, request):
         logout(request)

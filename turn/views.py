@@ -15,7 +15,10 @@ from django.shortcuts import get_object_or_404
 from account.models import patent
 from rest_framework.views import APIView
 from .serializers import AppointmentSerializer,DoctorSerializer
+from rest_framework.permissions import IsAuthenticated
+permission_classes = [IsAuthenticated]
 class CreateAppointmentsView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         doctors = Doctor.objects.all()
         serializer = DoctorSerializer(doctors, many=True)  # سریالیزه کردن کوئری‌ست
@@ -62,8 +65,8 @@ class doctor_delay_view(View):
                 appointment.save()
             return redirect('turn:reserved_appointments')
         return render(request, 'doctor_delay.html', {'form': form})
-
 class ReservedAppointments_listView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         user = request.user
         appointments = Appointment.objects.filter(is_reserved=True)
@@ -86,6 +89,7 @@ phone = 'YOUR_PHONE_NUMBER'  # Optional
 
 CallbackURL = 'http://127.0.0.1:8080/verify/'
 class pay_view(View):
+    permission_classes = [IsAuthenticated]
     def get(self, request, appointment_id):
         appointment = Appointment.objects.get(id=appointment_id)
         data = {
@@ -116,7 +120,9 @@ class pay_view(View):
             return render(request, 'error.html', {'message': 'Payment request timed out'})
         except requests.exceptions.ConnectionError:
             return render(request, 'error.html', {'message': 'Connection error occurred'})
+
 class Verify_View(View):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         authority = request.GET.get('Authority')
         if authority:
@@ -145,6 +151,7 @@ class Verify_View(View):
                 return {'status': False, 'code': str(response_data['Status'])}
         return {'status': False, 'code': 'Unknown error occurred'}
 #####################################################
+
 class AllDaysAppointmentsView(APIView):
     def get(self, request):
         today = date(2023,6, 29)
@@ -156,7 +163,7 @@ class DayAppointmentsView(APIView):
         appointments = Appointment.objects.filter(start_date=appointment_date, is_reserved=False)
         serializer = AppointmentSerializer(appointments, many=True)
         return Response(serializer.data)
-
+    permission_classes = [IsAuthenticated]  
     def post(self, request,appointment_date):
         appointment_id = request.data.get('appointment_id')
         try:
