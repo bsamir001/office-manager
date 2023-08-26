@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>فرم نمایش کاربر</title>
+</head>
+<body>
+    <h1>فرم نمایش کاربر</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="ذخیره">
+    </form>
+</body>
+</html>

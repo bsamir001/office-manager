@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointments with Same Type Bime</title>
+</head>
+<body>
+
+   <h1>لیست هزینه‌ها</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form1.as_p }}
+        {{ form2.as_p }}
+        <input type="submit" value="اعمال فیلتر">
+    </form>
+   {% for expence1 in expance %}
+                 <li>{{ expence1 }}</li>
+   {% endfor %}
+   {% if appointments %}
+        <h2>هزینه‌های فیلتر شده:</h2>
+        <ul>
+
+            {% for appointment in appointments %}
+                <li>{{ expance }}</li>
+                <li>{{ appointment }}</li>
+                <li> {{ patent.typebime }}</li>
+                <li> {{ expence }}جمع بیمه ها با فیلتر مشخص</li>
+                <li>{{ expense_count_all }} جمع پرداختی کل </li>
+            {% empty %}
+                <li>No appointments found for type bime "".</li>
+            {% endfor %}
+        </ul>
+   {% endif %}
+    {{ cout }}
+</body>
+</html>

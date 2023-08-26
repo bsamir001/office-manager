@@ -1,0 +1,7 @@
+Django
+Pillow
+kavenegar
+djangorestframework
+twilio
+psycopg2
+django-cors-headers
